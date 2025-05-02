@@ -1,24 +1,30 @@
 import matplotlib.pyplot as plt
 
-def plotar_distancias(distancias, nome_instancia):
-    plt.plot(distancias)
+def plotar_evolucao(distancias, nome_instancia):
+    """Plota o gráfico de evolução das distâncias"""
+    plt.figure(figsize=(10, 5))
+    plt.plot(distancias, 'b-', linewidth=1)
     plt.title(f"Evolução da Distância - {nome_instancia}")
     plt.xlabel("Geração")
-    plt.ylabel("Distância")
-    plt.grid(True)
+    plt.ylabel("Distância da Melhor Rota")
+    plt.grid(True, linestyle='--', alpha=0.7)
     plt.savefig(f"{nome_instancia}_evolucao.png")
     plt.close()
 
-def list(param):
-    pass
+def plotar_tempos(tempos):
+    """Plota o gráfico de tempos de execução"""
+    nomes = list(tempos.keys())
+    valores = list(tempos.values())
 
-def plotar_tempos_execucao(tempos):
-    instancias = list(tempos.keys())
-    tempos = list(tempos.values())
-    plt.bar(instancias, tempos)
+    plt.figure(figsize=(10, 5))
+    plt.bar(nomes, valores, color=['blue', 'green', 'red'])
     plt.title("Tempo de Execução por Instância")
-    plt.xlabel("Instância")
-    plt.ylabel("Tempo (s)")
-    plt.grid(True)
-    plt.savefig("tempos_execucao.png")
+    plt.xlabel("Instância TSP")
+    plt.ylabel("Tempo (segundos)")
+    plt.grid(True, axis='y', linestyle='--', alpha=0.7)
+
+    # Adiciona os valores em cima das barras
+    for i, v in enumerate(valores):
+        plt.text(i, v + 0.1, f"{v:.2f}s", ha='center')
+
     plt.close()

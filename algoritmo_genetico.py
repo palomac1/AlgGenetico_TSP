@@ -1,67 +1,98 @@
 import random
-from utils import calcular_distancia_total
+import math
 
-class AlgoritmoGeneticoTSP:
-    def __init__(self, cidades, tamanho_populacao, geracoes, taxa_mutacao, taxa_crossover):
+class AlgoritmoGenetico:
+    def __init__(self, cidades, tamanho_populacao=50, geracoes=100,
+                 chance_mutacao=0.05, chance_crossover=0.8):
         self.cidades = cidades
-        self.tamanho_populacao = tamanho_populacao
-        self.geracoes = geracoes
-        self.taxa_mutacao = taxa_mutacao
-        self.taxa_crossover = taxa_crossover
+        self.tamanho_pop = tamanho_populacao
+        self.max_geracoes = geracoes
+        self.chance_mutacao = chance_mutacao
+        self.chance_crossover = chance_crossover
 
-    def inicializar_populacao(self):
-        # Gera uma lista de índices das cidades
-        num_cidades = len(self.cidades)
-        return [random.sample(range(num_cidades), num_cidades) for _ in range(self.tamanho_populacao)]
+    def calcular_distancia(self, rota):
+        """Calcula a distância total de uma rota"""
+        distancia = 0
+        for i in range(len(rota)):
+            cidade_atual = self.cidades[rota[i]]
+            proxima_cidade = self.cidades[rota[(i + 1) % len(rota)]]
+            dx = cidade_atual[0] - proxima_cidade[0]
+            dy = cidade_atual[1] - proxima_cidade[1]
+            distancia += math.sqrt(dx*dx + dy*dy)
+        return distancia
 
-    def avaliar_fitness(self, cromossomo):
-        return calcular_distancia_total(cromossomo, self.cidades)
+    def criar_individuo(self):
+        """Cria um indivíduo (rota) aleatório"""
+        return random.sample(range(len(self.cidades)), len(self.cidades))
 
-    def selecao_por_torneio(self, populacao):
-        torneio = random.sample(populacao, 5)
-        return min(torneio, key=self.avaliar_fitness)
+    def criar_populacao(self):
+        """Cria a população inicial"""
+        return [self.criar_individuo() for _ in range(self.tamanho_pop)]
 
-    def crossover(self, pai1, pai2):
+    def selecionar_pai(self, populacao):
+        """Seleção por torneio simples"""
+        participantes = random.sample(populacao, 3)  # Torneio com 3 participantes
+        return min(participantes, key=self.calcular_distancia)
+
+    def cruzar(self, pai1, pai2):
+        """Crossover PMX (Partially Mapped Crossover)"""
+        if random.random() > self.chance_crossover:
+            return pai1.copy()  # Sem crossover
+
         tamanho = len(pai1)
-        inicio, fim = sorted(random.sample(range(tamanho), 2))
-        filho = [-1] * tamanho
-        filho[inicio:fim] = pai1[inicio:fim]
+        ponto1, ponto2 = sorted(random.sample(range(tamanho), 2))
 
-        ponteiro = 0
-        for gene in pai2:
-            if gene not in filho:
-                while filho[ponteiro] != -1:
-                    ponteiro += 1
-                filho[ponteiro] = gene
+        # Cria filho com segmento do pai1
+        filho = [-1] * tamanho
+        filho[ponto1:ponto2] = pai1[ponto1:ponto2]
+
+        # Preenche o resto com genes do pai2
+        for i in list(range(0, ponto1)) + list(range(ponto2, tamanho)):
+            if pai2[i] not in filho:
+                filho[i] = pai2[i]
+
+        # Preenche os genes faltantes
+        for i in range(tamanho):
+            if filho[i] == -1:
+                for gene in pai2:
+                    if gene not in filho:
+                        filho[i] = gene
+                        break
+
         return filho
 
-    def mutar(self, cromossomo):
-        i, j = random.sample(range(len(cromossomo)), 2)
-        cromossomo[i], cromossomo[j] = cromossomo[j], cromossomo[i]
+    def mutar(self, individuo):
+        """Mutação por swap de duas cidades"""
+        if random.random() < self.chance_mutacao:
+            i, j = random.sample(range(len(individuo)), 2)
+            individuo[i], individuo[j] = individuo[j], individuo[i]
 
-    def evoluir(self):
-        populacao = self.inicializar_populacao()
-        melhores_distancias = []
+    def executar(self):
+        """Executa o algoritmo genético"""
+        populacao = self.criar_populacao()
+        historico = []
 
-        for _ in range(self.geracoes):
+        for geracao in range(self.max_geracoes):
+            # Avalia a população
+            melhor_atual = min(populacao, key=self.calcular_distancia)
+            distancia = self.calcular_distancia(melhor_atual)
+            historico.append(distancia)
+
+            # Cria nova população
             nova_populacao = []
-            for _ in range(self.tamanho_populacao):
-                pai1 = self.selecao_por_torneio(populacao)
-                pai2 = self.selecao_por_torneio(populacao)
-
-                if random.random() < self.taxa_crossover:
-                    filho = self.crossover(pai1, pai2)
-                else:
-                    filho = pai1.copy()
-
-                if random.random() < self.taxa_mutacao:
-                    self.mutar(filho)
-
+            for _ in range(self.tamanho_pop):
+                pai1 = self.selecionar_pai(populacao)
+                pai2 = self.selecionar_pai(populacao)
+                filho = self.cruzar(pai1, pai2)
+                self.mutar(filho)
                 nova_populacao.append(filho)
 
             populacao = nova_populacao
-            melhor_atual = min(populacao, key=self.avaliar_fitness)
-            melhores_distancias.append(self.avaliar_fitness(melhor_atual))
 
-        melhor_solucao = min(populacao, key=self.avaliar_fitness)
-        return melhor_solucao, melhores_distancias
+            # Mostra progresso a cada 10 gerações
+            if geracao % 10 == 0:
+                print(f"Geração {geracao}: ")
+                print(f"Melhor distância = {distancia:.2f}\n")
+
+        melhor_final = min(populacao, key=self.calcular_distancia)
+        return melhor_final, historico

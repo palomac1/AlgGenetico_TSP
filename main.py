@@ -1,39 +1,58 @@
 import time
-from carregador_tsp import carregar_arquivo_tsp
-from algoritmo_genetico import AlgoritmoGeneticoTSP
-from graficos import plotar_distancias, plotar_tempos_execucao
+from carregador_tsp import carregar_cidades
+from algoritmo_genetico import AlgoritmoGenetico
+from graficos import plotar_evolucao, plotar_tempos
 
 def testar_instancia(nome_arquivo, nome_instancia):
-    cidades = carregar_arquivo_tsp(f"dados/{nome_arquivo}")
-    ag = AlgoritmoGeneticoTSP(
+    cidades = carregar_cidades(f"dados/{nome_arquivo}")
+
+    ag = AlgoritmoGenetico(
         cidades=cidades,
-        tamanho_populacao=100,
-        geracoes=500,
-        taxa_mutacao=0.02,
-        taxa_crossover=0.9
+        tamanho_populacao=50,
+        geracoes=100,
+        chance_mutacao=0.05,
+        chance_crossover=0.8
     )
-    melhor_rota, distancias = ag.evoluir()
-    plotar_distancias(distancias, nome_instancia)
-    return ag.avaliar_fitness(melhor_rota)
+
+    melhor_rota, historico_distancias = ag.executar()
+
+    plotar_evolucao(historico_distancias, nome_instancia)
+
+    distancia = ag.calcular_distancia(melhor_rota)
+    print(f"Melhor distância encontrada para {nome_instancia}: {distancia:.2f}")
+
+    return distancia
 
 def main():
-    instancias = {
+    print("\n=== Algoritmo Genético para TSP ===")
+
+    # Dicionário de instâncias para testar
+    problemas = {
         "burma14": "burma14.tsp",
         "ch130": "ch130.tsp",
         "pr439": "pr439.tsp"
     }
 
-    tempos = {}
+    tempos_execucao = {}
+    resultados = {}
 
-    for nome, arquivo in instancias.items():
-        print(f"Testando instância: {nome}")
+    for nome, arquivo in problemas.items():
+        print(f"\n=== Processando {nome} ===")
         inicio = time.time()
-        melhor_distancia = testar_instancia(arquivo, nome)
-        fim = time.time()
-        tempos[nome] = fim - inicio
-        print(f"{nome} - Melhor distância encontrada: {melhor_distancia:.2f}\n")
 
-    plotar_tempos_execucao(tempos)
+        distancia = testar_instancia(arquivo, nome)
+        resultados[nome] = distancia
+
+        fim = time.time()
+        tempo = fim - inicio
+        tempos_execucao[nome] = tempo
+        print(f"Tempo de execução: {tempo:.2f} segundos")
+
+    print("\n=== Resultados Finais ===")
+    for nome, distancia in resultados.items():
+        print(f"{nome}: {distancia:.2f} (em {tempos_execucao[nome]:.2f}s)")
+
+    plotar_tempos(tempos_execucao)
 
 if __name__ == "__main__":
     main()

@@ -1,17 +1,29 @@
-def carregar_arquivo_tsp(caminho_arquivo):
-    with open(caminho_arquivo, "r") as arquivo:
-        linhas = arquivo.readlines()
-        secao_coordenadas = False
-        cidades = []
+def carregar_cidades(caminho_arquivo):
+    """Carrega as coordenadas das cidades de um arquivo TSP"""
+    #print(f"Lendo arquivo: {caminho_arquivo}")
+    cidades = []
 
-        for linha in linhas:
-            if "NODE_COORD_SECTION" in linha:
-                secao_coordenadas = True
+    with open(caminho_arquivo, 'r') as arquivo:
+        ler_coordenadas = False
+
+        for linha in arquivo:
+            linha = linha.strip()
+
+            if linha == "NODE_COORD_SECTION":
+                ler_coordenadas = True
                 continue
-            if secao_coordenadas:
-                if "EOF" in linha:
-                    break
-                partes = linha.strip().split()
-                if len(partes) == 3:
-                    cidades.append((float(partes[1]), float(partes[2])))
-        return cidades
+            elif linha == "EOF":
+                break
+
+            if ler_coordenadas:
+                partes = linha.split()
+                if len(partes) == 3:  # ID, X, Y
+                    try:
+                        x = float(partes[1])
+                        y = float(partes[2])
+                        cidades.append((x, y))
+                    except ValueError:
+                        continue
+
+    print(f"\nQuantidade de cidades carregadas: {len(cidades)} \n")
+    return cidades

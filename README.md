@@ -1,7 +1,9 @@
-# Algoritmo Genético para o Problema do Caixeiro Viajante (TSP)
+# Algoritmo Genético para TSP - Versão Simplificada
 
-## Como usar
+Este projeto implementa um algoritmo genético para resolver o Problema do Caixeiro Viajante (TSP).
 
-1. Adicione arquivos `.tsp` na pasta `dados/`, como `burma14.tsp`
-2. Execute `main.py` no IntelliJ (com Python configurado)
-3. Veja os gráficos gerados e a melhor distância obtida
+## Como executar
+
+1. Certifique-se que tem Python 3.x instalado
+2. Crie uma pasta chamada `dados` e coloque os arquivos .tsp lá
+3. Execute o programa principal:
