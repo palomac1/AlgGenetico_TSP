@@ -10,12 +10,13 @@ def plotar_evolucao(distancias, nome_instancia):
     plt.grid(True, linestyle='--', alpha=0.7)
     plt.savefig(f"{nome_instancia}_evolucao.png")
     plt.close()
-
+    
 def plotar_tempos(tempos):
     """Plota o gráfico de tempos de execução"""
     nomes = list(tempos.keys())
     valores = list(tempos.values())
 
+    # Ordena os tempos de execução
     plt.figure(figsize=(10, 5))
     plt.bar(nomes, valores, color=['blue', 'green', 'red'])
     plt.title("Tempo de Execução por Instância")

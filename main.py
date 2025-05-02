@@ -1,4 +1,4 @@
-import time
+import time 
 from carregador_tsp import carregar_cidades
 from algoritmo_genetico import AlgoritmoGenetico
 from graficos import plotar_evolucao, plotar_tempos
@@ -6,7 +6,7 @@ from graficos import plotar_evolucao, plotar_tempos
 def testar_instancia(nome_arquivo, nome_instancia):
     cidades = carregar_cidades(f"dados/{nome_arquivo}")
 
-    ag = AlgoritmoGenetico(
+    ag = AlgoritmoGenetico( # Inicializa o algoritmo genético 
         cidades=cidades,
         tamanho_populacao=50,
         geracoes=100,
@@ -26,7 +26,7 @@ def testar_instancia(nome_arquivo, nome_instancia):
 def main():
     print("\n=== Algoritmo Genético para TSP ===")
 
-    # Dicionário de instâncias para testar
+    # Dicionário de instâncias para testar 
     problemas = {
         "burma14": "burma14.tsp",
         "ch130": "ch130.tsp",
@@ -40,11 +40,13 @@ def main():
         print(f"\n=== Processando {nome} ===")
         inicio = time.time()
 
+
         distancia = testar_instancia(arquivo, nome)
         resultados[nome] = distancia
 
-        fim = time.time()
-        tempo = fim - inicio
+        # Calcula o tempo de execução
+        fim = time.time() 
+        tempo = fim - inicio 
         tempos_execucao[nome] = tempo
         print(f"Tempo de execução: {tempo:.2f} segundos")
 
@@ -52,7 +54,7 @@ def main():
     for nome, distancia in resultados.items():
         print(f"{nome}: {distancia:.2f} (em {tempos_execucao[nome]:.2f}s)")
 
-    plotar_tempos(tempos_execucao)
+    plotar_tempos(tempos_execucao) 
 
 if __name__ == "__main__":
     main()
