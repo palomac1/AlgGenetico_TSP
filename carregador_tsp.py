@@ -1,8 +1,9 @@
-def carregar_cidades(caminho_arquivo):
+def carregar_cidades(caminho_arquivo): # Função para carregar as coordenadas das cidades de um arquivo TSP
     """Carrega as coordenadas das cidades de um arquivo TSP"""
     cidades = []
 
-    with open(caminho_arquivo, 'r') as arquivo:
+    with open(caminho_arquivo, 'r') as arquivo: # Abre o arquivo para leitura
+        # Lê o arquivo linha por linha
         ler_coordenadas = False
 
         for linha in arquivo:
@@ -11,7 +12,7 @@ def carregar_cidades(caminho_arquivo):
             if linha == "NODE_COORD_SECTION": # Início da seção de coordenadas para leitura
                 ler_coordenadas = True
                 continue
-            elif linha == "EOF":
+            elif linha == "EOF": # Fim do arquivo
                 break
 
             if ler_coordenadas:

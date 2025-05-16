@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 
+#Faz o import do matplotlib para plotar os gráficos e do numpy para manipulação de arrays, assim como o time para calcular o tempo de execução
 def plotar_evolucao(distancias, nome_instancia):
     """Plota o gráfico de evolução das distâncias"""
     plt.figure(figsize=(10, 5))
