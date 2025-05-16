@@ -6,13 +6,14 @@ from graficos import plotar_evolucao, plotar_tempos
 def testar_instancia(nome_arquivo, nome_instancia):
     cidades = carregar_cidades(f"dados/{nome_arquivo}")
 
-    ag = AlgoritmoGenetico( # Inicializa o algoritmo genético 
+    ag = AlgoritmoGenetico(
         cidades=cidades,
-        tamanho_populacao=50,
-        geracoes=100,
+        tamanho_populacao=200,
+        geracoes=500,
         chance_mutacao=0.05,
         chance_crossover=0.8
     )
+
 
     melhor_rota, historico_distancias = ag.executar()
 
