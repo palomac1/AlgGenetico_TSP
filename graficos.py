@@ -27,5 +27,6 @@ def plotar_tempos(tempos):
     # Adiciona os valores em cima das barras
     for i, v in enumerate(valores):
         plt.text(i, v + 0.1, f"{v:.2f}s", ha='center')
-
+    plt.tight_layout()
+    plt.savefig("tempos_execucao.png")
     plt.close()
