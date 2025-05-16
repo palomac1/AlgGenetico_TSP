@@ -50,8 +50,3 @@ python main.py
 O algoritmo será executado e exibirá uma visualização gráfica da melhor rota sendo otimizada ao longo das gerações.
 
 
-
-Esse `README.md` é ideal para colocar tanto no repositório GitHub quanto no `.zip` de entrega do seu trabalho.
-
-Se quiser, posso também gerar uma versão `.pdf` com essas instruções ou embutir isso em um `.docx`. Deseja isso?
-```
