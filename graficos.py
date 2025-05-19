@@ -1,17 +1,20 @@
 import matplotlib.pyplot as plt
+import os
 
 #Faz o import do matplotlib para plotar os gráficos e do numpy para manipulação de arrays, assim como o time para calcular o tempo de execução
-def plotar_evolucao(distancias, nome_instancia):
+def plotar_evolucao(historico_distancias, nome_instancia):
     """Plota o gráfico de evolução das distâncias"""
+    os.makedirs("resultados", exist_ok=True)  # Garante que a pasta exista
     plt.figure(figsize=(10, 5))
-    plt.plot(distancias, 'b-', linewidth=1)
+    plt.plot(historico_distancias, 'b-', linewidth=1)
     plt.title(f"Evolução da Distância - {nome_instancia}")
     plt.xlabel("Geração")
     plt.ylabel("Distância da Melhor Rota")
     plt.grid(True, linestyle='--', alpha=0.7)
-    plt.savefig(f"{nome_instancia}_evolucao.png")
+    plt.savefig(f"resultados/{nome_instancia}_evolucao.png")
     plt.close()
     
+# Plota o gráfico de evolução das distâncias
 def plotar_tempos(tempos):
     """Plota o gráfico de tempos de execução"""
     nomes = list(tempos.keys())

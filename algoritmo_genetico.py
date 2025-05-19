@@ -1,27 +1,24 @@
 
 import random
+from utils import  calcular_distancia
 import math
 
-class AlgoritmoGenetico: # Classe que implementa o algoritmo genético para resolver o problema do caixeiro viajante (TSP)
-    def __init__(self, cidades, tamanho_populacao=200, geracoes=500, 
+class AlgoritmoGenetico:
+    def __init__(self, cidades, usar_haversine=False, tamanho_populacao=200, geracoes=500,
                  chance_mutacao=0.05, chance_crossover=0.8):
-        self.cidades = cidades # Lista de coordenadas das cidades
-        self.tamanho_pop = tamanho_populacao # Tamanho da população
-        self.max_geracoes = geracoes # Número máximo de gerações
-        self.chance_mutacao = chance_mutacao # Chance de mutação
-        self.chance_crossover = chance_crossover # Chance de crossover
+        self.cidades = cidades
+        self.usar_haversine = usar_haversine
+        self.tamanho_pop = tamanho_populacao
+        self.max_geracoes = geracoes
+        self.chance_mutacao = chance_mutacao
+        self.chance_crossover = chance_crossover
 
-    def calcular_distancia(self, rota): # Função para calcular a distância total de uma rota
+    def calcular_distancia(self, rota):
         distancia = 0
-        for i in range(len(rota)): # Para cada cidade na rota
-            # Calcula a distância entre a cidade atual e a próxima
-            # A próxima cidade é a primeira se estivermos na última cidade
-            # Isso garante que o caminho seja fechado
+        for i in range(len(rota)):
             cidade_atual = self.cidades[rota[i]]
             proxima_cidade = self.cidades[rota[(i + 1) % len(rota)]]
-            dx = cidade_atual[0] - proxima_cidade[0]
-            dy = cidade_atual[1] - proxima_cidade[1]
-            distancia += math.sqrt(dx*dx + dy*dy)
+            distancia += calcular_distancia(cidade_atual, proxima_cidade, self.usar_haversine)
         return distancia
 
     def criar_individuo(self): # Função para criar um indivíduo aleatório
